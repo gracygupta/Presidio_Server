@@ -4,6 +4,7 @@ const logger = require("morgan");
 const dotenv = require("dotenv");
 const cors = require("cors");
 const bodyParser = require("body-parser");
+const routes = require("./router/index");
 require("./db_config/conn").dbConnect();
 
 dotenv.config();
@@ -31,6 +32,8 @@ app.get("/", async (req, res) => {
     message: "Connected to the Server",
   });
 });
+
+app.use("/api", routes);
 
 app.use((req, res, next) => {
   return res.status(404).json({ message: "404 Not Found" });
