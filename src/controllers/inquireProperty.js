@@ -23,6 +23,13 @@ const inquireProperty = async (req, res) => {
         }
         const ownerName = owner.first_name + " " + owner.last_name;
 
+        // Save inquiry in the database
+        const inquiry = new Inquiries({
+            buyer: userId,
+            property: propertyId
+        });
+        await inquiry.save();
+        // Send inquiry emails to the buyer and owner
         await sendInquiryEmails( buyerName, user.email, ownerName, owner.email, propertyAddress, "Presidio");
 
         // Send Owner details to the user in the response
