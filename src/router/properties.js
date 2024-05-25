@@ -60,7 +60,7 @@ router.post(
 router.get("/properties", properties.getProperties);
 
 // Like or unlike a property
-router.post("/property/:propertyId/like", likes.likeProperty);
+router.post("/like", likes.likeProperty);
 
 // Get all likes for a property
 router.get("/property/:propertyId/likes", likes.getAllLikesProperty);
