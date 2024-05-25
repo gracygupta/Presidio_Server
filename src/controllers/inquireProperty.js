@@ -1,7 +1,7 @@
 const Property = require('../models/property');
 const User = require('../models/user');
 const {sendInquiryEmails} = require('./emailController');
-
+const Inquiries = require('../models/inquiries');
 const inquireProperty = async (req, res) => {
     try {
         const {propertyId, userId} = req.body;
