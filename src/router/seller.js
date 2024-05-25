@@ -4,7 +4,7 @@ const { body } = require("express-validator");
 const multer = require("multer");
 const utilController = require("../controllers/utilController");
 const properties = require("../controllers/property");
-
+const likes = require("../controllers/likeProperty");
 // Set up multer storage for uploading images
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -54,5 +54,9 @@ router.post(
   utilController.validateRequest,
   properties.addProperty
 );
+
+
+// Like a property
+router.post("/properties/:propertyId/like", likes.likeProperty);
 
 module.exports = router;
