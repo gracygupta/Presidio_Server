@@ -1,0 +1,13 @@
+### GET request to example server
+POST http://localhost:5000/api/auth/register HTTP/1.1
+Content-Type: application/json
+
+{
+    "first_name": "test",
+    "last_name": "test",
+  "email": "usjadon19@gmail.com",
+  "phone_number": "0700000000",
+  "role": "buyer",
+  "username": "test",
+    "password": "test@12"
+}
