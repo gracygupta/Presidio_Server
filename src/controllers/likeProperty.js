@@ -1,5 +1,5 @@
-const Property = require("../models/Property");
-const User = require("../models/User");
+const Property = require("../models/property");
+const User = require("../models/user");
 const Likes = require("../models/Likes");
 
 
