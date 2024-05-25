@@ -36,9 +36,9 @@ const propertySchema = new Schema(
     amenities: [String], // Array of amenities (e.g., "parking", "pool", "gym")
     images: [
       {
-        originalName: { type: String, required: true }, // Original filename
-        url: { type: String, required: true }, // S3 URL
-        key: { type: String, required: true }, // S3 key for deletion if needed
+        originalName: { type: String, required: true },
+        url: { type: String, required: true },
+        key: { type: String, required: true },
       },
     ], // Array of image URLs
     available: {

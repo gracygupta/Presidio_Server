@@ -31,26 +31,8 @@ const upload = multer({
 
 // Add Property API with multiple image upload
 exports.addProperty = async (req, res) => {
+  console.log(req.body);
   try {
-    // Upload images
-    // await new Promise((resolve, reject) => {
-    //   upload(req, res, function (err) {
-    //     console.log(err);
-    //     if (err instanceof multer.MulterError) {
-    //       return reject({
-    //         status: 400,
-    //         success: false,
-    //         message: "File size limit exceeded or invalid file type",
-    //       });
-    //     } else if (err) {
-    //       return reject({ status: 400, message: err.message });
-    //     }
-    //     resolve();
-    //   });
-    // });
-
-    // Validate owner
-    console.log("req.body.ownerId", req.body.ownerId);
     const owner = await User.findById(req.body.ownerId);
     console.log(owner);
     if (!owner || !owner.role == "seller") {
@@ -60,6 +42,9 @@ exports.addProperty = async (req, res) => {
       });
     }
 
+    const location = JSON.parse(req.body.location);
+    console.log(location);
+
     // Construct property object
     const property = new Property({
       title: req.body.title,
@@ -68,12 +53,8 @@ exports.addProperty = async (req, res) => {
       area: req.body.area,
       numberOfBedrooms: req.body.numberOfBedrooms,
       numberOfBathrooms: req.body.numberOfBathrooms,
-      location: {
-        city: req.body.city,
-        state: req.body.state,
-        zip: req.body.zip,
-      },
-      // amenities: req.body.amenities || [],
+      location: location,
+      amenities: req.body.amenities || [],
       images: req.files.map((file) => ({
         originalName: file.originalname,
         url: file.path,
@@ -132,6 +113,41 @@ exports.getProperties = async (req, res) => {
     });
   } catch (error) {
     console.error(error);
+    res.status(500).json({ success: false, error: "Server error" });
+  }
+};
+
+exports.getOwnedProperty = async (req, res) => {
+  const owner = req.params.id;
+  try {
+    const properties = await Property.find({ owner }).sort({ createdAt: -1 });
+
+    if (properties.length === 0) {
+      return res.status(200).json({ message: "No Properties Found" });
+    }
+
+    const propertiesWithImagesAsBinary = properties.map((property) => {
+      const imagesAsBinary = property.images.map((image) => {
+        const imageData = fs.readFileSync(`propertyImages/${image.key}`, {
+          encoding: "base64",
+        });
+        return {
+          originalName: image.originalName,
+          data: imageData,
+        };
+      });
+
+      return {
+        ...property._doc,
+        images: imagesAsBinary,
+      };
+    });
+    console.log("properties", properties);
+    res
+      .status(200)
+      .json({ success: true, properties: propertiesWithImagesAsBinary });
+  } catch (err) {
+    console.error(err);
     res.status(500).json({ success: false, error: "Server error" });
   }
 };

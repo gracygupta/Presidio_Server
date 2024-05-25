@@ -49,9 +49,6 @@ router.post(
       .withMessage("Number of bathrooms must be a number"),
     body("rent").isNumeric().withMessage("Rent must be a number"),
     body("ownerId").notEmpty().withMessage("Owner ID is required"),
-    body("city").notEmpty().withMessage("City is required"),
-    body("state").notEmpty().withMessage("State is required"),
-    body("zip").notEmpty().withMessage("Zip is required"),
   ],
   utilController.validateRequest,
   properties.addProperty
@@ -67,5 +64,8 @@ router.get("/property/:propertyId/likes", likes.getAllLikesProperty);
 
 // Inquire about a property
 router.post("/inquire", inquire.inquireProperty);
+
+//Get owned properties
+router.get("/properties/owned/:id", properties.getOwnedProperty);
 
 module.exports = router;
