@@ -1,4 +1,4 @@
-### GET request to example server
+###
 POST http://localhost:5000/api/auth/register HTTP/1.1
 Content-Type: application/json
 
@@ -8,6 +8,42 @@ Content-Type: application/json
   "email": "usjadon19@gmail.com",
   "phone_number": "0700000000",
   "role": "buyer",
-  "username": "test",
+  "username": "test3",
     "password": "test@12"
+}
+
+###
+POST http://localhost:5000/api/auth/register HTTP/1.1
+Content-Type: application/json
+
+{
+  "first_name": "test",
+  "last_name": "test",
+  "email": "utkarshsinghjadon196@gmail.com",
+  "phone_number": "0700000001",
+  "role": "seller",
+  "username": "test2",
+  "password": "test@12"
+}
+
+###
+
+#POST http://localhost:5000/api/send-email HTTP/1.1
+#Content-Type: application/json
+#
+#{
+#    "email": "usjadon19@gmail.com",
+#      "name": "Test Email",
+#      "message": "This is a test email"
+#}
+
+
+###
+
+POST http://localhost:5000/api/inquire HTTP/1.1
+Content-Type: application/json
+
+{
+    "propertyId": "665209cf7819d9c359ebfe94",
+    "userId": "6652112a708d0aacdd5afef6"
 }
