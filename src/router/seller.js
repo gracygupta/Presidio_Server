@@ -56,7 +56,9 @@ router.post(
 );
 
 
-// Like a property
+// Like or unlike a property
 router.post("/properties/:propertyId/like", likes.likeProperty);
 
+// Get all likes for a property
+router.get("/properties/:propertyId/likes", likes.getAllLikesProperty);
 module.exports = router;
