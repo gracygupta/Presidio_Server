@@ -1,22 +1,27 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const inquiriesSchema = new Schema({
+const inquiriesSchema = new Schema(
+  {
     buyer: {
-        type: Schema.Types.ObjectId,
-        ref: 'User',
-        required: true
+      type: Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
     },
     property: {
-        type: Schema.Types.ObjectId,
-        ref: 'Property',
-        required: true
+      type: Schema.Types.ObjectId,
+      ref: "Property",
+      required: true,
     },
     status: {
-        type: String,
-        enum: ['pending', 'approved', 'rejected'],
-        default: 'pending'
-    }
-}, {timestamps: true});
+      type: String,
+      enum: ["pending", "approved", "rejected"],
+      default: "pending",
+    },
+  },
+  { timestamps: true }
+);
 
-const Inquiries = mongoose.model('Inquiries', inquiriesSchema);
+const Inquiries = mongoose.model("Inquiries", inquiriesSchema);
+
+module.exports = Inquiries;
