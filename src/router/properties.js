@@ -8,7 +8,7 @@ const properties = require("../controllers/property");
 // Set up multer storage for uploading images
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "propertyImages/");
+    cb(null, "propertyImages");
   },
   filename: function (req, file, cb) {
     cb(null, Date.now() + "-" + file.originalname);
@@ -54,5 +54,7 @@ router.post(
   utilController.validateRequest,
   properties.addProperty
 );
+
+router.get("/properties", properties.getProperties);
 
 module.exports = router;

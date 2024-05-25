@@ -1,5 +1,7 @@
 const Property = require("../models/property");
 const multer = require("multer");
+const User = require("../models/user");
+const fs = require("fs");
 
 // Set up multer storage for uploading images
 const storage = multer.diskStorage({
@@ -24,32 +26,34 @@ const fileFilter = (req, file, cb) => {
 const upload = multer({
   storage: storage,
   fileFilter: fileFilter,
-  limits: { fileSize: 5 * 1024 * 1024 }, // Limit file size to 5MB
+  // limits: { fileSize: 5 * 1024 * 1024 }, // Limit file size to 5MB
 }).array("images", 3); // Allow up to 3 images, with input field name 'images'
 
 // Add Property API with multiple image upload
 exports.addProperty = async (req, res) => {
   try {
     // Upload images
-    await new Promise((resolve, reject) => {
-      upload(req, res, function (err) {
-        console.log(err);
-        if (err instanceof multer.MulterError) {
-          return reject({
-            status: 400,
-            success: false,
-            message: "File size limit exceeded or invalid file type",
-          });
-        } else if (err) {
-          return reject({ status: 400, message: err.message });
-        }
-        resolve();
-      });
-    });
+    // await new Promise((resolve, reject) => {
+    //   upload(req, res, function (err) {
+    //     console.log(err);
+    //     if (err instanceof multer.MulterError) {
+    //       return reject({
+    //         status: 400,
+    //         success: false,
+    //         message: "File size limit exceeded or invalid file type",
+    //       });
+    //     } else if (err) {
+    //       return reject({ status: 400, message: err.message });
+    //     }
+    //     resolve();
+    //   });
+    // });
 
     // Validate owner
+    console.log("req.body.ownerId", req.body.ownerId);
     const owner = await User.findById(req.body.ownerId);
-    if (!owner || !owner.isSeller) {
+    console.log(owner);
+    if (!owner || !owner.role == "seller") {
       return res.status(400).json({
         success: false,
         error: "Invalid owner ID or owner is not a seller",
@@ -85,6 +89,47 @@ exports.addProperty = async (req, res) => {
     res
       .status(201)
       .json({ success: true, message: "Property Added", property });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, error: "Server error" });
+  }
+};
+
+exports.getProperties = async (req, res) => {
+  try {
+    const properties = await Property.find({})
+      .sort({ createdAt: -1 }) // Sort by time in descending order
+      .limit(50); // Limit to 100 results
+
+    if (properties.length === 0) {
+      return res.status(200).json({ message: "No Properties Found" });
+    }
+
+    // Iterate through each property and encode images to binary
+    const propertiesWithImagesAsBinary = properties.map((property) => {
+      // Iterate through images array of each property
+      const imagesAsBinary = property.images.map((image) => {
+        // Read image file as binary data
+        const imageData = fs.readFileSync(`propertyImages/${image.key}`, {
+          encoding: "base64",
+        });
+        return {
+          originalName: image.originalName,
+          data: imageData,
+        };
+      });
+
+      return {
+        ...property._doc,
+        images: imagesAsBinary,
+      };
+    });
+
+    res.status(200).json({
+      success: true,
+      message: "Recent 100 Properties Fetched with Images",
+      properties: propertiesWithImagesAsBinary,
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json({ success: false, error: "Server error" });
