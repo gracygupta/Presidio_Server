@@ -131,6 +131,9 @@ exports.getOwnedProperty = async (req, res) => {
         const imageData = fs.readFileSync(`propertyImages/${image.key}`, {
           encoding: "base64",
         });
+
+        if (!imageData) return;
+
         return {
           originalName: image.originalName,
           data: imageData,
