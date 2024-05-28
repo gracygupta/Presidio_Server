@@ -33,7 +33,10 @@ const likeProperty = async (req, res) => {
       buyer: userId,
     });
     if (existingLike) {
-      await existingLike.remove();
+      await Likes.deleleOne({
+        property: propertyId,
+        buyer: userId,
+      });
       return res
         .status(200)
         .json({ success: true, message: "Property unliked" });
